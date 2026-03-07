@@ -26,6 +26,8 @@ You will see a mix of passing and failing tests. Your goal is to make **all 55 t
 ## Project Structure
 
 ```
+assets/
+└── products.json                   # Local mock product data
 lib/
 ├── main.dart
 ├── router.dart
@@ -34,7 +36,7 @@ lib/
 ├── models/
 │   └── product_model.dart          # ProductModel + VariantModel
 ├── services/
-│   ├── product_service.dart        # Dio-based API client
+│   ├── product_service.dart        # Loads product data from local JSON asset
 │   └── html_content_service.dart   # HTML utility methods
 ├── providers/
 │   └── product_list_provider.dart  # ChangeNotifier state management
