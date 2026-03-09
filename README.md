@@ -3,14 +3,13 @@
 **Role:** Flutter Engineer
 **Time limit:** 2 days
 
----
 
 ## Prerequisites
 
 - Flutter SDK (stable channel)
 - A code editor with Dart/Flutter support
 
----
+
 
 ## Getting Started
 
@@ -47,7 +46,7 @@ lib/
     └── responsive_layout.dart      # Layout breakpoints
 ```
 
----
+
 
 ## Key Packages
 
@@ -59,7 +58,7 @@ lib/
 | `go_router`                     | Declarative routing                    |
 | `flutter_widget_from_html_core` | Rendering HTML content                 |
 
----
+
 
 ## Your Task
 
@@ -71,7 +70,6 @@ The scaffold contains **deliberate bugs** and **unimplemented feature stubs**. Y
 
 Full instructions are in [ASSESSMENT.md](../ASSESSMENT.md). The test suite is the specification.
 
----
 
 ## Test Suite
 
