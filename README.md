@@ -20,7 +20,6 @@ flutter test --reporter=expanded
 
 You will see a mix of passing and failing tests. Your goal is to make **all 55 tests pass**.
 
----
 
 ## Project Structure
 
