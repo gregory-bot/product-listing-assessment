@@ -87,7 +87,6 @@ Full instructions are in [ASSESSMENT.md](../ASSESSMENT.md). The test suite is th
 
 47 tests are provided in the scaffold. You write the remaining 8.
 
----
 
 ## Submission
 
