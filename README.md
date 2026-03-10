@@ -67,7 +67,7 @@ The scaffold contains **deliberate bugs** and **unimplemented feature stubs**. Y
 2. **Implement features** — the test suite describes exactly what each feature must do. Read the tests carefully.
 3. **Write unit tests** — create `test/html_content_service_test.dart` with 8 tests for the `HtmlContentService` class.
 
-Full instructions are in [ASSESSMENT.md](../ASSESSMENT.md). The test suite is the specification.
+
 
 
 ## Test Suite
