@@ -4,16 +4,16 @@ import 'router.dart';
 
 void main() {
   setupServiceLocator();
-  runApp(const WinpFluxApp());
+  runApp(const ProductListing());
 }
 
-class WinpFluxApp extends StatelessWidget {
-  const WinpFluxApp({super.key});
+class ProductListing extends StatelessWidget {
+  const ProductListing({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'WINP Flux Assessment',
+      title: 'Product Listing Assessment',
       routerConfig: appRouter,
     );
   }
