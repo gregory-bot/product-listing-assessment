@@ -13,6 +13,7 @@ class ProductListProvider extends ChangeNotifier {
   final Map<String, VariantModel> _selectedVariants = {};
   final Set<String> _favoriteIds = {};
   String? _errorMessage;
+  bool? _lastSortAscending;
 
   ProductListState get state => _state;
 
@@ -25,7 +26,13 @@ class ProductListProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   Future<void> loadProducts() async {
-    _state = ProductListState.loading;
+    // Use refreshing state if already loaded or refreshing, loading otherwise
+    if (_state == ProductListState.loaded ||
+        _state == ProductListState.refreshing) {
+      _state = ProductListState.refreshing;
+    } else {
+      _state = ProductListState.loading;
+    }
     _errorMessage = null;
     notifyListeners();
 
@@ -34,11 +41,24 @@ class ProductListProvider extends ChangeNotifier {
       final fetched = await service.fetchProducts();
 
       _products = fetched;
-      _filteredProducts = List.from(fetched);
-      notifyListeners();
+      
+      // Apply current filter to new products
+      if (_filterQuery.isNotEmpty) {
+        _filteredProducts = _products
+            .where((p) =>
+                p.title.toLowerCase().contains(_filterQuery.toLowerCase()))
+            .toList();
+      } else {
+        _filteredProducts = List.from(_products);
+      }
+      
+      // Re-apply sort if it was previously applied
+      if (_lastSortAscending != null) {
+        _applySortToFiltered(_lastSortAscending!);
+      }
 
       for (final p in _products) {
-        if (p.variants.isNotEmpty) {
+        if (p.variants.isNotEmpty && !_selectedVariants.containsKey(p.id)) {
           _selectedVariants[p.id] = p.variants.first;
         }
       }
@@ -61,13 +81,54 @@ class ProductListProvider extends ChangeNotifier {
       _selectedVariants[productId];
 
   void filterProducts(String query) {
+    _filterQuery = query.trim();
+    
+    if (_filterQuery.isEmpty) {
+      _filteredProducts = List.from(_products);
+    } else {
+      _filteredProducts = _products
+          .where((p) =>
+              p.title.toLowerCase().contains(_filterQuery.toLowerCase()))
+          .toList();
+    }
+    
+    // Re-apply sort if it was previously applied
+    if (_lastSortAscending != null) {
+      _applySortToFiltered(_lastSortAscending!);
+    }
+    
+    notifyListeners();
   }
 
   void sortByPrice({required bool ascending}) {
+    _lastSortAscending = ascending;
+    _applySortToFiltered(ascending);
+    notifyListeners();
+  }
+
+  void _applySortToFiltered(bool ascending) {
+    _filteredProducts.sort((a, b) {
+      final aVariant = _selectedVariants[a.id];
+      final bVariant = _selectedVariants[b.id];
+      
+      // Products with no selected variant sort to end
+      if (aVariant == null && bVariant == null) return 0;
+      if (aVariant == null) return 1;
+      if (bVariant == null) return -1;
+      
+      final comparison = aVariant.price.compareTo(bVariant.price);
+      return ascending ? comparison : -comparison;
+    });
   }
 
   void toggleFavorite(String productId) {
+    if (_favoriteIds.contains(productId)) {
+      _favoriteIds.remove(productId);
+    } else {
+      _favoriteIds.add(productId);
+    }
+    notifyListeners();
   }
 
-  bool isFavorite(String productId) => false;
+  bool isFavorite(String productId) => _favoriteIds.contains(productId);
 }

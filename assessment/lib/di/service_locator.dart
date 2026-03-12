@@ -4,6 +4,10 @@ import '../services/product_service.dart';
 
 void setupServiceLocator() {
   final sl = GetIt.instance;
-  sl.registerFactory<ProductService>(() => ProductService());
-  sl.registerFactory<HtmlContentService>(() => HtmlContentService());
+  if (!sl.isRegistered<ProductService>()) {
+    sl.registerLazySingleton<ProductService>(() => ProductService());
+  }
+  if (!sl.isRegistered<HtmlContentService>()) {
+    sl.registerLazySingleton<HtmlContentService>(() => HtmlContentService());
+  }
 }

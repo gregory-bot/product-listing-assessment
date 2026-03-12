@@ -43,6 +43,10 @@ class _FailingProductService extends ProductService {
 }
 
 void main() {
+  setUp(() {
+    GetIt.instance.reset();
+    GetIt.instance.reset(); // Double reset for safety
+  });
   tearDown(() => GetIt.instance.reset());
 
   group('ProductListProvider state transitions', () {
@@ -196,7 +200,7 @@ void main() {
       final provider = ProductListProvider();
       await provider.loadProducts();
 
-      GetIt.instance.reset();
+      GetIt.instance.unregister<ProductService>();
       GetIt.instance.registerLazySingleton<ProductService>(
           () => _NeverCompletingProductService());
 
@@ -221,7 +225,7 @@ void main() {
       final provider = ProductListProvider();
       await provider.loadProducts();
 
-      GetIt.instance.reset();
+      GetIt.instance.unregister<ProductService>();
       GetIt.instance.registerLazySingleton<ProductService>(
           () => _FailingProductService());
 
@@ -244,7 +248,7 @@ void main() {
       final provider = ProductListProvider();
       await provider.loadProducts();
 
-      GetIt.instance.reset();
+      await GetIt.instance.reset();
       GetIt.instance.registerLazySingleton<ProductService>(
           () => _NeverCompletingProductService());
 
@@ -422,7 +426,7 @@ void main() {
       final provider = ProductListProvider();
       await provider.loadProducts();
 
-      GetIt.instance.reset();
+      GetIt.instance.unregister<ProductService>();
       GetIt.instance.registerLazySingleton<ProductService>(() =>
           _NoVariantProductService());
 
@@ -561,7 +565,7 @@ void main() {
       provider.toggleFavorite('p1');
       expect(provider.isFavorite('p1'), isTrue);
 
-      GetIt.instance.reset();
+      GetIt.instance.unregister<ProductService>();
       GetIt.instance.registerLazySingleton<ProductService>(
           () => _FailingProductService());
 

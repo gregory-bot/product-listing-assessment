@@ -27,7 +27,24 @@ class _ProductListView extends StatelessWidget {
     final grid = switch (provider.state) {
       ProductListState.initial || ProductListState.loading =>
         const _SkeletonGrid(),
-      ProductListState.refreshing => const _SkeletonGrid(),
+      ProductListState.refreshing => Stack(
+          children: [
+            ResponsiveLayout(
+              mobile: _ProductGrid(provider: provider, crossAxisCount: 1),
+              tablet: _ProductGrid(provider: provider, crossAxisCount: 2),
+              desktop: _ProductGrid(provider: provider, crossAxisCount: 3),
+            ),
+            const Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ],
+        ),
       ProductListState.error => _ErrorView(
           message: provider.errorMessage,
           onRetry: provider.loadProducts,
@@ -60,7 +77,9 @@ class _ProductListView extends StatelessWidget {
                 border: OutlineInputBorder(),
                 isDense: true,
               ),
-              onChanged: (_) {},
+              onChanged: (value) {
+                provider.filterProducts(value);
+              },
             ),
           ),
           Expanded(child: grid),
