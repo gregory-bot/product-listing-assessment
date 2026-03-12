@@ -1,163 +1,217 @@
 # Product Listing Assessment
 
-## Summary
+**[View Live App - https://fluuter-web-test.netlify.app/](https://fluuter-web-test.netlify.app/)**
 
-This is the **implementation** of the WINP Flux Product Listing assessment. All required features are implemented, all tests pass,
+This is the **implementation** of the WINP Flux Product Listing assessment.
 
-**Test Results:**
+### Test Result
 ```
-57 tests
-   - 47 original provided tests
-   - 8 new HtmlContentService tests
-   - 2 additional test instance
+ 57 tests passed
+   ├── 47 original provided tests
+   ├── 8 new HtmlContentService unit tests
+   └── 2 additional test instances
 ```
 
-## Running the Tests
+---
 
-```bash
-cd assessment
-flutter pub get
-flutter test
-```
+## Screenshots
+
+### Product Listing Page
+![Product Listing](./screenshots/product-listing.png)
+
+### Search & Filter in Action
+![Search Feature](./screenshots/search-feature.png)
+
+### Favorites Feature
+![Favorites](./screenshots/favorites.png)
+
+### Sort Control
+![Sort Controls](./screenshots/sort-controls.png)
+
+### Responsive Design - Mobile
+![Mobile View](./screenshots/mobile-view.png)
+
+---
 
 ## Project Structure
 
 ```
-assets/
-└── products.json                   # Local mock product data
-lib/
-├── main.dart
-├── router.dart
-├── di/
-│   └── service_locator.dart        # GetIt service registration
-├── models/
-│   └── product_model.dart          # ProductModel + VariantModel
-├── services/
-│   ├── product_service.dart        # Loads product data from local JSON asset
-│   └── html_content_service.dart   # HTML utility methods
-├── providers/
-│   └── product_list_provider.dart  # ChangeNotifier state management
-├── screens/
-│   └── product_list_screen.dart    # Main screen with provider wiring
-└── widgets/
-    ├── product_card.dart           # Product display card
-    └── responsive_layout.dart      # Layout breakpoints
+assessment/
+├── assets/
+│   └── products.json                   # Local mock product data
+├── lib/
+│   ├── main.dart                       # App entry point with Material theme
+│   ├── router.dart                     # Go Router configuration
+│   ├── di/
+│   │   └── service_locator.dart        # GetIt dependency injection setup
+│   ├── models/
+│   │   └── product_model.dart          # ProductModel & VariantModel classes
+│   ├── services/
+│   │   ├── product_service.dart        # Loads product data from JSON
+│   │   └── html_content_service.dart   # HTML parsing utilities
+│   ├── providers/
+│   │   └── product_list_provider.dart  # ChangeNotifier state management
+│   ├── screens/
+│   │   └── product_list_screen.dart    # Main screen with provider integration
+│   └── widgets/
+│       ├── product_card.dart           # Product display card with favorites
+│       └── responsive_layout.dart      # Responsive layout system
+├── test/
+│   ├── product_list_provider_test.dart (37 tests)
+│   ├── product_service_di_test.dart    (6 tests)
+│   ├── product_list_screen_test.dart   (6 tests)
+│   ├── html_content_service_test.dart  (8 tests - newly created)
+│   └── widget_test.dart                (1 test)
+└── pubspec.yaml                        # Flutter dependencies
 ```
 
+---
 
+## feature
 
-## What I Implemented
+### 1. **Provider State Management** 
+**File:** `lib/providers/product_list_provider.dart`
 
-### 1. **Provider State Management** (`lib/providers/product_list_provider.dart`)
+#### Filter Products (`filterProducts()`)
+- Filters products by title (case-insensitive matching)
+- Preserves sort order when filtering is applied
+- Works before and after products are loaded
+- Real-time filtering as user types
 
- **Implemented `filterProducts()`**
-- filters products by title (case-insensitive)
-- preserves sort order when filtering
-- works before and after product load
+#### Sort by price (`sortByPrice()`)
+- Sorts products by selected variant price
+- Supports ascending and descending order
+- Preserves active filters when sorting
+- Products without selected variants sort to end
 
- **Implemented `sortByPrice()`**
-- Sorts by selected variant price
-- Support ascending/descending order
-- preserves filter state when sorting
-- Products with no selected variant sort to end
-
- **Implemented `toggleFavorite()` and `isFavorite()`**
-- Toggles product favorites
+#### Favorites Management (`toggleFavorite()`, `isFavorite()`)
+- Toggle individual product favorites with heart icon
 - Favorites persist across product refreshes
 - Favorites survive error states
-- Notifies listeners on changes
+- Notifies UI listeners on changes
+- Visual feedback with filled/outlined heart icons
 
- **Fixed State Transitions**
-- `initial` → `loading` → `loaded`
-- `loaded` → `refreshing` → `loaded` or `error`
+#### State Management
+- Proper state transitions: `initial` → `loading` → `loaded`
+- Refresh flow: `loaded` → `refreshing` → `loaded` or `error`
 - Calling `loadProducts()` while `refreshing` stays in `refreshing` state
-- Proper error state handling with messages
+- Comprehensive error handling with user-friendly messages
 
-### 2. **UI Updates** (`lib/screens/product_list_screen.dart`)
+### 2. **User Interface Enhancements**
+**File:** `lib/screens/product_list_screen.dart`, `lib/widgets/product_card.dart`
 
- **Search Field Integration**
-- TextField now calls `filterProducts()` on text changes
-- Real-time product filtering
+#### Search Integration
+- Real-time search field with "Search products..." placeholder
+- Clear button appears when text is entered
+- Integrated with `filterProducts()` for live filtering
+- Submit action support
 
- **Loading State UIs**
-- Skeleton grid during initial load
-- Products + spinner overlay during refresh (not skeleton)
-- Error state with message and Retry button
+#### Product Card Design
+- Product image with error handling (fallback icon)
+- Favorite button (heart icon) with toggle functionality
+- Variant selection with ChoiceChip widgets
+- Product title, price, and currency display
+- HTML description rendering for product details
+- Rounded corners and shadow elevation
 
-### 3. **Dependency Injection** (`lib/di/service_locator.dart`)
+#### Sort Controls
+- Toggle button in AppBar to switch between ascending/descending
+- Trending up/down icons for visual feedback
+- Tooltip showing current sort order
+- Conditional display (only shows when products loaded)
 
- **Fixed GetIt Registration**
-- Added pre-registration checks
-- Changed to lazy singletons
-- Prevents duplicate registration errors
+#### Loading States
+- Skeleton loader grid during initial load
+- Products with spinner overlay during refresh
+- Error view with retry button
+- Empty state view with clear search option
 
-### 4. **Tests** (57 total)
+#### Responsive Design
+- Mobile: 1 column grid
+- Tablet: 2 column grid
+- Desktop: 3 column grid
+- Automatic layout adjustment based on screen width
 
- **Created 8 HtmlContentService Tests** (`test/html_content_service_test.dart`)
-- `stripTags()` - removes HTML tags and trims
-- `hasBlockContent()` - detects block-level elements
+### 3. **Dependency Injection**
+**File:** `lib/di/service_locator.dart`
+
+- GetIt service locator configuration
+- Pre-registration checks to prevent duplicates
+- Lazy singleton registration pattern
+- Proper isolation for testing
+
+### 4. **Comprehensive Testing** 
+**Created 8 HtmlContentService Tests** (`test/html_content_service_test.dart`)
+
+- `stripTags()` functionality - removes all HTML tags and trims whitespace
+- `hasBlockContent()` detection - identifies block-level HTML elements
 - Case-insensitive tag detection
-- Nested and self-closing tag handling
+- Nested tag handling
+- Self-closing tag edge cases
 
- **Fixed Widget Tests** (`test/widget_test.dart`)
-- Updated to use correct `ProductListing` class
-- Proper GetIt mock setup
+**Widget Tests** (`test/widget_test.dart`)
+- Updated to use correct `ProductListing` class reference
+- Proper GetIt mock service setup
+- Integration test for app startup
 
- **Fixed Provider Tests** (`test/product_list_provider_test.dart`)
-- fixed GetIt registration in 5 tests
-- Used targeted `unregister()` instead of full `reset()`
-- Proper async/await handling
+**Provider Tests** (`test/product_list_provider_test.dart`)
+- GetIt registration fixes in 5 critical tests
+- Used targeted `unregister()` instead of full reset
+- Proper async/await handling for state transitions
+- 37 total tests covering all provider methods
 
 ---
 
-## Challenges, and my Solution
+## Technical challenge and Solution
 
 ### Challenge 1: GetIt Registration Conflicts
-**Where:** 5 tests in `product_list_provider_test.dart`  
-**Problem:** Tests calling `reset()` then re-registering services were getting "already registered" error
+**Location:** `test/product_list_provider_test.dart` (5 tests)  
+**Problem:** Tests using `reset()` then re-registering were getting "already registered" errors  
 **Solution:** 
-- used targeted `unregister<ProductService>()` instead of full reset
-- Added pre-registration checks in service locator
-- Awaited `reset()` where async behavior was required
+- Replaced full `reset()` with targeted `unregister<ProductService>()`
+- Added pre-registration checks: `if (!sl.isRegistered<T>())`
+- Converted to lazy singletons with `registerLazySingleton<T>()`
+- Awaited `reset()` where async operations required
 
-### Challenge 2: State Transition logic
-**Where:** `loadProducts()` method  
-**Problem:** Calling `loadProducts()` while `refreshing` would revert to `loading` state  
-**Solution:** Added condition to check both `loaded` and `refreshing` states before deciding next state
-
-### Challenge 3: Filter & Sort Interaction
-**Where:** Provider methods  
-**Problem:** Filtering would lose sort, sorting would lose filter  
-**Solution:** Added `_lastSortAscending` property to track applied sorts and re-apply after filtering
-
-### Challenge 4: Notification timing
-**Where:** `loadProducts()` multiple notifyListeners calls  
-**Problem:** Tests caught duplicate state changes  
-**Solution:** Removed unnecessary mid-load notification, kept only final one
-
-### Challenge 5: Refreshing UI
-**Where:** `product_list_screen.dart`  
-**Problem:** Showed skeleton during refresh instead of products  
-**Solution:** Changed to Stack with spinner overlay on top of active grid
-
----
-
-## Test Results Breakdown
-
+### Challenge 2: State Transition Logic
+**Location:** `loadProducts()` method  
+**Problem:** Calling `loadProducts()` while `refreshing` state would revert to `loading`  
+**Solution:** 
+```dart
+if (_state == ProductListState.loaded || _state == ProductListState.refreshing) {
+  _state = ProductListState.refreshing;
+} else {
+  _state = ProductListState.loading;
+}
 ```
-Service locator tests:              3 
-Provider state transitions:         9 
-Provider refreshing state:          4 
-Provider filtering:                 7 
-Provider sorting:                   5 
-Filter + sort interaction:          3 
-Provider favorites:                 8 
-Widget screen tests:                7 
-HtmlContentService tests:           8  (newly written)
-Widget smoke test:                  1 
-Additional test instances:          3 
-────────────────────────────────────────
-TOTAL:                            57 
+
+### Challenge 3: Filter & Sort Coordination
+**Location:** Provider methods  
+**Problem:** Filtering would lose sort order, sorting would lose filter  
+**Solution:** 
+- Added `_lastSortAscending` property to track applied sorts
+- `filterProducts()` re-applies sort after filtering
+- `sortByPrice()` preserves active filter state
+- Helper method `_applySortToFiltered()` coordinates both operations
+
+### Challenge 4: Notification Timing
+**Location:** `loadProducts()` multiple state updates  
+**Problem:** Tests detected duplicate state change notifications  
+**Solution:** Consolidated to single `notifyListeners()` at end of operation
+
+### Challenge 5: Refreshing UI Feedback
+**Location:** `product_list_screen.dart` refreshing state  
+**Problem:** Showed skeleton loader during refresh instead of keeping products visible  
+**Solution:** 
+```dart
+Stack(
+  children: [
+    ResponsiveLayout(...),  // Keep products visible
+    Positioned(
+      child: CircularProgressIndicator()  // Overlay spinner
+    )
+  ]
+)
 ```
 
 ---
@@ -165,32 +219,34 @@ TOTAL:                            57
 ## Files Modified
 
 | File | Changes |
-|------|---------|
+|---|---|
 | `lib/providers/product_list_provider.dart` | Implemented filter, sort, favorites; fixed state transitions |
-| `lib/screens/product_list_screen.dart` | Integrated search; fixed refreshing UI |
-| `lib/di/service_locator.dart` | Added registration checks; lazy singletons |
-| `test/product_list_provider_test.dart` | Fixed GetIt in 5 tests |
-| `test/html_content_service_test.dart` | Created 8 new tests |
-| `test/widget_test.dart` | Fixed MyApp reference |
+| `lib/screens/product_list_screen.dart` | Added search, favorites button, sort controls, loading UIs |
+| `lib/widgets/product_card.dart` | Added favorite button with heart icon |
+| `lib/widgets/responsive_layout.dart` | Responsive grid system (1/2/3 columns) |
+| `lib/di/service_locator.dart` | Fixed GetIt registration with checks and lazy singletons |
+| `lib/main.dart` | Enhanced Material theme with custom colors and styles |
+| `test/product_list_provider_test.dart` | Fixed GetIt in 5 tests with targeted unregister |
+| `test/html_content_service_test.dart` | Created 8 new unit tests (NEW FILE) |
+| `test/widget_test.dart` | Fixed ProductListing reference |
 
 ---
 
-
-## run
-
-To run locally:
-
+### Local Development
 ```bash
 cd assessment
 flutter pub get
-flutter test
+flutter test          # Run all 57 tests
+flutter run -d chrome # Launch in edge or chrome browser
 ```
 
-To run on web:
-
+### Build for Production
 ```bash
-flutter run -d edge
+cd assessment
+flutter build web --release
 ```
 
----
+This create production file in `build/web/`
 
+### went on to deploy to Netlify: 
+**URL:** https://fluuter-web-test.netlify.app/
