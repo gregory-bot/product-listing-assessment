@@ -17,7 +17,7 @@ This is the **implementation** of the WINP Flux Product Listing assessment.
 ## Screenshots
 
 ### Product Listing Page
-![Product Listing](./screenshots/product-listing.png)
+![Product Listing](pl.jpeg)
 
 ### Search & Filter in Action
 ![Search Feature](./screenshots/search-feature.png)
