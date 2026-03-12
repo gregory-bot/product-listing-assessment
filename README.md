@@ -1,4 +1,4 @@
-# WINP Flux — Product Listing Assessment
+# Product Listing Assessment
 
 ## Summary
 
