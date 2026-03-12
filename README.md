@@ -19,17 +19,8 @@ This is the **implementation** of the WINP Flux Product Listing assessment.
 ### Product Listing Page
 ![Product Listing](pl.jpeg)
 
-### Search & Filter in Action
-![Search Feature](./screenshots/search-feature.png)
-
-### Favorites Feature
-![Favorites](./screenshots/favorites.png)
-
-### Sort Control
-![Sort Controls](./screenshots/sort-controls.png)
-
-### Responsive Design - Mobile
-![Mobile View](./screenshots/mobile-view.png)
+### run app
+![Search Feature](run.jpeg)
 
 ---
 
